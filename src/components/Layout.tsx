@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom'
 import Header from './Header'
+import ParticleBackground from './ParticleBackground'
 import { useThemeStore } from '../stores/themeStore'
 import { useEffect } from 'react'
 
@@ -12,6 +13,7 @@ export default function Layout() {
 
   return (
     <div className="app-layout">
+      <ParticleBackground />
       <Header />
       <main className="main-content">
         <Outlet />
