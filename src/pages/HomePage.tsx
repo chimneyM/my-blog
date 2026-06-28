@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <div className="home-page">
       <section className="hero">
-        <h1 className="hero-title">Codex 的博客</h1>
+        <h1 className="hero-title">chimneyM</h1>
         <p className="hero-subtitle">
           记录技术思考、前端实践与个人成长。偶尔写一些有意思的东西。
         </p>

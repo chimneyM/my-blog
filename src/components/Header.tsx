@@ -15,7 +15,7 @@ export default function Header() {
     <header className="header">
       <div className="header-inner">
         <Link to="/" className="logo">
-          Codex 博客
+          chimneyM
         </Link>
         <nav className="nav">
           {navLinks.map((link) => (

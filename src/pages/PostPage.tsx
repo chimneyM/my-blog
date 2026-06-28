@@ -10,10 +10,10 @@ export default function PostPage() {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} - Codex 博客`
+      document.title = `${post.title} - chimneyM`
     }
     return () => {
-      document.title = 'Codex 博客'
+      document.title = 'chimneyM'
     }
   }, [post])
 

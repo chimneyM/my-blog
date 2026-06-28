@@ -31,8 +31,8 @@ export default function AboutPage() {
             如果你对我的文章有任何想法或建议，欢迎通过以下方式联系我：
           </p>
           <ul>
-            <li>GitHub: github.com/codex</li>
-            <li>Email: hello@codex.blog</li>
+            <li>GitHub: github.com/chimneym</li>
+            <li>Email: chimneym@outlook.com</li>
           </ul>
         </section>
       </div>

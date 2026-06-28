@@ -18,7 +18,7 @@ export default function Layout() {
       </main>
       <footer className="footer">
         <div className="footer-inner">
-          <p>&copy; {new Date().getFullYear()} Codex 博客. Built with React + Zustand.</p>
+          <p>&copy; {new Date().getFullYear()} chimneyM. Built with React + Zustand.</p>
         </div>
       </footer>
     </div>
