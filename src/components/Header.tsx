@@ -1,5 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useThemeStore } from '../stores/themeStore'
+import { useAuthStore } from '../stores/authStore'
 
 const navLinks = [
   { path: '/', label: '首页' },
@@ -9,6 +10,7 @@ const navLinks = [
 
 export default function Header() {
   const { theme, toggleTheme } = useThemeStore()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const location = useLocation()
 
   return (
@@ -22,11 +24,26 @@ export default function Header() {
             <Link
               key={link.path}
               to={link.path}
-              className={`nav-link${location.pathname === link.path ? ' active' : ''}`}
+              className={'nav-link' + (location.pathname === link.path ? ' active' : '')}
             >
               {link.label}
             </Link>
           ))}
+          {isAuthenticated ? (
+            <Link
+              to="/admin"
+              className={'nav-link' + (location.pathname.startsWith('/admin') ? ' active' : '')}
+            >
+              管理
+            </Link>
+          ) : (
+            <Link
+              to="/login"
+              className={'nav-link' + (location.pathname === '/login' ? ' active' : '')}
+            >
+              登录
+            </Link>
+          )}
           <button
             className="theme-toggle"
             onClick={toggleTheme}

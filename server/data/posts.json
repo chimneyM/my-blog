@@ -1,0 +1,42 @@
+[
+  {
+    "id": "1",
+    "title": "用 React + Zustand 构建现代 Web 应用",
+    "slug": "building-modern-web-apps-with-react-zustand",
+    "date": "2026-06-20",
+    "tags": ["React", "Zustand", "TypeScript"],
+    "excerpt": "Zustand 是一个轻量级的状态管理库，与 React 配合使用可以优雅地管理应用状态。本文介绍如何在实际项目中落地。",
+    "readingTime": 8,
+    "content": "## 为什么选择 Zustand？\n\n在 React 生态中，状态管理方案层出不穷。从最早的 Redux，到后来的 MobX、Recoil、Jotai，每个方案都有自己的哲学。Zustand 是其中最为轻量、直觉化的一个。\n\n### 核心优势\n\n```typescript\nimport { create } from 'zustand'\n\ninterface CounterState {\n  count: number\n  increment: () => void\n  decrement: () => void\n}\n\nconst useCounterStore = create<CounterState>((set) => ({\n  count: 0,\n  increment: () => set((state) => ({ count: state.count + 1 })),\n  decrement: () => set((state) => ({ count: state.count - 1 })),\n}))\n```\n\n- **极简 API**：不需要 Provider 包裹，不需要 action creator\n- **类型安全**：原生 TypeScript 支持，自动推导类型\n- **灵活**：可以在组件外部读写 state\n- **性能优秀**：细粒度订阅，只 re-render 相关组件\n\n### 与 React Query 配合\n\n对于服务端状态，建议用 React Query 或 SWR；Zustand 专注于客户端状态。两者分工明确。"
+  },
+  {
+    "id": "2",
+    "title": "TypeScript 高级类型体操实战",
+    "slug": "advanced-typescript-type-challenges",
+    "date": "2026-06-15",
+    "tags": ["TypeScript", "前端"],
+    "excerpt": "从条件类型到模板字面量类型，深入 TypeScript 的类型系统，写出更安全、更优雅的代码。",
+    "readingTime": 12,
+    "content": "## 条件类型\n\n条件类型是 TypeScript 类型系统的核心能力之一，它让我们可以根据类型关系做分支判断。\n\n```typescript\ntype IsString<T> = T extends string ? true : false\n\ntype A = IsString<'hello'>  // true\ntype B = IsString<42>        // false\n```\n\n### infer 关键字\n\n`infer` 让我们在条件类型中声明待推断的类型变量：\n\n```typescript\ntype ReturnType<T> = T extends (...args: any[]) => infer R ? R : never\n\ntype Fn = (x: number) => string\ntype R = ReturnType<Fn>  // string\n```\n\n### 模板字面量类型\n\n```typescript\ntype EventName = `on${Capitalize<string>}`\n// 'onChange' | 'onClick' | 'onSubmit' ...\n```\n\n合理使用这些高级类型，可以让你的代码在编译期就捕获大量潜在错误。"
+  },
+  {
+    "id": "3",
+    "title": "Vite 插件开发入门指南",
+    "slug": "vite-plugin-development-guide",
+    "date": "2026-06-08",
+    "tags": ["Vite", "构建工具", "前端工程化"],
+    "excerpt": "从零开始开发一个 Vite 插件，理解 Vite 的插件系统和构建流程。",
+    "readingTime": 10,
+    "content": "## Vite 插件是什么？\n\nVite 插件是一个具有特定钩子函数的对象，这些钩子会在构建过程的不同阶段被调用。\n\n### 一个简单的例子\n\n```typescript\nimport type { Plugin } from 'vite'\n\nfunction myPlugin(): Plugin {\n  return {\n    name: 'my-plugin',\n    transform(code, id) {\n      if (id.endsWith('.special')) {\n        return {\n          code: `export default ${JSON.stringify(code)}`,\n          map: null,\n        }\n      }\n    },\n  }\n}\n```\n\n### 插件钩子\n\nVite 插件支持 Rollup 的所有钩子，并额外提供了一些 Vite 特有的钩子：\n\n- `config` - 修改 Vite 配置\n- `configureServer` - 配置开发服务器\n- `transformIndexHtml` - 转换 index.html\n- `handleHotUpdate` - 自定义 HMR 更新\n\n开发插件是理解 Vite 内部机制的最佳途径。"
+  },
+  {
+    "id": "4",
+    "title": "个人博客搭建：从设计到部署",
+    "slug": "building-personal-blog-from-design-to-deploy",
+    "date": "2026-05-28",
+    "tags": ["博客", "React", "Vite", "全栈"],
+    "excerpt": "记录我搭建这个博客的完整过程，包括技术选型、架构设计、组件规划和部署策略。",
+    "readingTime": 15,
+    "content": "## 技术选型\n\n搭建个人博客时，技术选型是最重要的决策之一。我的选择：\n\n| 层面 | 技术 | 理由 |\n|------|------|------|\n| 框架 | React 18 | 生态成熟，社区活跃 |\n| 构建 | Vite 5 | 极速 HMR，零配置启动 |\n| 状态管理 | Zustand | 轻量、类型安全、无 Provider |\n| 路由 | React Router v6 | SPA 标配，嵌套路由方便 |\n| 样式 | CSS Modules | 局部作用域，无运行时开销 |\n| 内容 | Markdown | 写作体验好，易于迁移 |\n\n### 架构设计\n\n整个应用分为三层：\n\n1. **数据层** — 博客文章数据\n2. **状态层** — Zustand stores（主题、搜索、筛选）\n3. **视图层** — React 页面组件 + 通用组件"
+  }
+]
