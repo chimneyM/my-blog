@@ -1,0 +1,16 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env.local
+*.log
+.DS_Store
+post_examples
+README.md
+DEPLOYMENT.md
+AGENTS.md
+blog-generator.skill.md
+tsconfig*.json
+tsconfig*.tsbuildinfo
+.vercel

@@ -1,0 +1,24 @@
+{
+  "version": "2.0",
+  "envId": "",
+  "services": [
+    {
+      "name": "my-blog",
+      "source": {
+        "type": "local",
+        "path": "./"
+      },
+      "buildType": "dockerfile",
+      "containerPort": 3000,
+      "envVariables": {
+        "NODE_ENV": "production",
+        "JWT_SECRET": "{{JWT_SECRET}}",
+        "ADMIN_PASSWORD": "{{ADMIN_PASSWORD}}"
+      },
+      "scalingPolicy": {
+        "minReplicas": 0,
+        "maxReplicas": 1
+      }
+    }
+  ]
+}
