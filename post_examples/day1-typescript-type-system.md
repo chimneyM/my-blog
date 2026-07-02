@@ -1,15 +1,3 @@
-import type { Post } from '../types'
-
-export const posts: Post[] = [
-  {
-    id: '5',
-    title: 'AI Agent 学习计划 Day 1：TypeScript 类型系统与类型推断',
-    slug: 'ai-agent-day1-typescript-type-system',
-    date: '2026-07-02',
-    tags: ['TypeScript', 'AI Agent', '学习笔记'],
-    excerpt: 'AI Agent 84 天学习计划第一天。系统梳理 TypeScript 类型系统四大核心概念：泛型、联合类型、交叉类型、条件类型，并给出 Agent 开发场景中的实际应用。',
-    readingTime: 25,
-    content: `
 # AI Agent 学习计划 Day 1：TypeScript 类型系统与类型推断
 
 > 📅 日期：2026-07-02  
@@ -32,7 +20,7 @@ export const posts: Post[] = [
 
 ### 1.2 泛型函数
 
-\`\`\`typescript
+```typescript
 // 不使用泛型：丢失类型信息
 function identity(value: any): any {
   return value
@@ -45,13 +33,13 @@ function identity<T>(value: T): T {
 }
 const result = identity('hello') // result 类型为 string
 const num = identity(42)         // num 类型为 number
-\`\`\`
+```
 
 ### 1.3 泛型约束（Constraints）
 
-使用 \`extends\` 限制泛型参数的范围：
+使用 `extends` 限制泛型参数的范围：
 
-\`\`\`typescript
+```typescript
 // 约束 T 必须包含 length 属性
 function getLength<T extends { length: number }>(value: T): number {
   return value.length
@@ -60,11 +48,11 @@ function getLength<T extends { length: number }>(value: T): number {
 getLength('hello')    // ✅ 5
 getLength([1, 2, 3])  // ✅ 3
 getLength(42)         // ❌ 类型不满足约束
-\`\`\`
+```
 
 ### 1.4 泛型在 Agent 开发中的应用
 
-\`\`\`typescript
+```typescript
 // 定义 Agent 工具的泛型接口
 interface AgentTool<TInput, TOutput> {
   name: string
@@ -78,14 +66,14 @@ const searchTool: AgentTool<string, string[]> = {
   description: '搜索互联网获取信息',
   execute: async (query: string) => {
     // ... 返回搜索结果数组
-    return [\`关于 \${query} 的结果1\`, \`关于 \${query} 的结果2\`]
+    return [`关于 ${query} 的结果1`, `关于 ${query} 的结果2`]
   }
 }
-\`\`\`
+```
 
 ### 1.5 多类型参数与默认值
 
-\`\`\`typescript
+```typescript
 // 多类型参数
 function pair<A, B>(first: A, second: B): [A, B] {
   return [first, second]
@@ -97,7 +85,7 @@ interface Box<T = string> {
 }
 const strBox: Box = { value: 'hello' }       // T 默认为 string
 const numBox: Box<number> = { value: 42 }     // 显式指定 number
-\`\`\`
+```
 
 ---
 
@@ -105,22 +93,22 @@ const numBox: Box<number> = { value: 42 }     // 显式指定 number
 
 ### 2.1 基本用法
 
-联合类型表示一个值可以是几种类型之一，使用 \`|\` 分隔：
+联合类型表示一个值可以是几种类型之一，使用 `|` 分隔：
 
-\`\`\`typescript
+```typescript
 type ID = string | number
 
 function findById(id: ID) {
   // id 可以是 string 或 number
   console.log(typeof id) // 'string' 或 'number'
 }
-\`\`\`
+```
 
 ### 2.2 字面量联合类型
 
 非常实用的模式，用于表示有限的取值集合：
 
-\`\`\`typescript
+```typescript
 type ThemeMode = 'light' | 'dark' | 'auto'
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE'
 
@@ -129,13 +117,13 @@ function setTheme(mode: ThemeMode) {
 }
 setTheme('light')  // ✅
 setTheme('blue')   // ❌ 不在允许范围内
-\`\`\`
+```
 
 ### 2.3 类型收窄（Type Narrowing）
 
 TypeScript 会根据控制流自动收窄联合类型：
 
-\`\`\`typescript
+```typescript
 type ToolResult =
   | { status: 'success'; data: string }
   | { status: 'error'; message: string }
@@ -150,13 +138,13 @@ function handleResult(result: ToolResult) {
     console.log(result.message) // ✅ 可以访问 message
   }
 }
-\`\`\`
+```
 
 ### 2.4 类型守卫（Type Guards）
 
-使用 \`typeof\`、\`in\`、\`instanceof\` 自定义类型收窄逻辑：
+使用 `typeof`、`in`、`instanceof` 自定义类型收窄逻辑：
 
-\`\`\`typescript
+```typescript
 // typeof 守卫
 function process(value: string | number) {
   if (typeof value === 'string') {
@@ -181,11 +169,11 @@ function move(animal: Bird | Fish) {
 function isError(x: unknown): x is Error {
   return x instanceof Error
 }
-\`\`\`
+```
 
 ### 2.5 Agent 中的联合类型应用
 
-\`\`\`typescript
+```typescript
 // LLM 返回的消息类型
 type Message =
   | { role: 'user'; content: string }
@@ -196,18 +184,18 @@ type Message =
 function sendMessage(msg: Message) {
   switch (msg.role) {
     case 'user':
-      console.log(\`用户: \${msg.content}\`)
+      console.log(`用户: ${msg.content}`)
       break
     case 'assistant':
-      console.log(\`助手: \${msg.content}\`)
+      console.log(`助手: ${msg.content}`)
       msg.toolCalls?.forEach(call => executeTool(call))
       break
     case 'tool':
-      console.log(\`工具结果: \${msg.content}\`)
+      console.log(`工具结果: ${msg.content}`)
       break
   }
 }
-\`\`\`
+```
 
 ---
 
@@ -215,9 +203,9 @@ function sendMessage(msg: Message) {
 
 ### 3.1 基本概念
 
-交叉类型使用 \`&\` 将多个类型合并为一个，表示「同时满足所有类型」：
+交叉类型使用 `&` 将多个类型合并为一个，表示「同时满足所有类型」：
 
-\`\`\`typescript
+```typescript
 interface Nameable { name: string }
 interface Loggable { log: () => void }
 
@@ -228,11 +216,11 @@ const entity: Entity = {
   name: 'Agent',
   log: () => console.log('logging...')
 }
-\`\`\`
+```
 
 ### 3.2 与联合类型的对比
 
-| 特性 | 联合类型 \`A | B\` | 交叉类型 \`A & B\` |
+| 特性 | 联合类型 `A | B` | 交叉类型 `A & B` |
 |------|------------------|-------------------|
 | 语义 | 「或」——满足其一即可 | 「且」——必须同时满足 |
 | 取值范围 | A 的值 ∪ B 的值 | A 的值 ∩ B 的值 |
@@ -242,14 +230,14 @@ const entity: Entity = {
 
 交叉类型非常适合实现 Mixin：
 
-\`\`\`typescript
+```typescript
 type Constructor<T = {}> = new (...args: any[]) => T
 
 // 可日志化的 Mixin
 function withLogging<TBase extends Constructor>(Base: TBase) {
   return class extends Base {
     log(msg: string) {
-      console.log(\`[\${new Date().toISOString()}] \${msg}\`)
+      console.log(`[${new Date().toISOString()}] ${msg}`)
     }
   }
 }
@@ -272,11 +260,11 @@ const EnhancedAgent = withSerializable(withLogging(BaseAgent))
 const agent = new EnhancedAgent('MyAgent')
 agent.log('启动')       // 来自 withLogging
 agent.serialize()       // 来自 withSerializable
-\`\`\`
+```
 
 ### 3.4 Agent 能力组合
 
-\`\`\`typescript
+```typescript
 interface ToolUser {
   useTool: (name: string, input: unknown) => Promise<unknown>
 }
@@ -292,7 +280,7 @@ interface Planner {
 
 // 一个完整的 Agent 同时具备三种能力
 type FullAgent = ToolUser & MemoryHolder & Planner
-\`\`\`
+```
 
 ---
 
@@ -302,19 +290,19 @@ type FullAgent = ToolUser & MemoryHolder & Planner
 
 条件类型根据类型关系做分支判断，语法类似三元表达式：
 
-\`\`\`typescript
+```typescript
 type IsString<T> = T extends string ? true : false
 
 type A = IsString<'hello'>  // true
 type B = IsString<42>       // false
 type C = IsString<string>   // true
-\`\`\`
+```
 
 ### 4.2 infer 关键字
 
-\`infer\` 在条件类型中声明待推断的类型变量，是提取类型信息的利器：
+`infer` 在条件类型中声明待推断的类型变量，是提取类型信息的利器：
 
-\`\`\`typescript
+```typescript
 // 提取函数返回值类型
 type MyReturnType<T> = T extends (...args: any[]) => infer R ? R : never
 
@@ -330,23 +318,23 @@ type P = FirstParam<(id: number, name: string) => void>  // number
 type UnwrapPromise<T> = T extends Promise<infer U> ? U : T
 
 type Inner = UnwrapPromise<Promise<number>>  // number
-\`\`\`
+```
 
 ### 4.3 分布式条件类型
 
 当条件类型作用于「裸类型参数」的联合类型时，会分布式地应用到每个成员：
 
-\`\`\`typescript
+```typescript
 type ToArray<T> = T extends any ? T[] : never
 
 type Result = ToArray<string | number>
 // 等价于 ToArray<string> | ToArray<number>
 // 即 string[] | number[]
-\`\`\`
+```
 
-利用这个特性可以实现 \`Exclude\` 和 \`Extract\`：
+利用这个特性可以实现 `Exclude` 和 `Extract`：
 
-\`\`\`typescript
+```typescript
 // 手写 Exclude
 type MyExclude<T, U> = T extends U ? never : T
 
@@ -356,13 +344,13 @@ type T1 = MyExclude<'a' | 'b' | 'c', 'a'>  // 'b' | 'c'
 type MyExtract<T, U> = T extends U ? T : never
 
 type T2 = MyExtract<'a' | 'b' | 'c', 'a' | 'b'>  // 'a' | 'b'
-\`\`\`
+```
 
 ### 4.4 内置工具类型
 
 TypeScript 提供了许多基于条件类型的工具类型：
 
-\`\`\`typescript
+```typescript
 // ReturnType - 获取函数返回类型
 type R1 = ReturnType<() => string>  // string
 
@@ -379,11 +367,11 @@ type I1 = InstanceType<typeof Foo>  // Foo
 // Partial - 所有属性变可选
 interface Config { host: string; port: number }
 type PartialConfig = Partial<Config>  // { host?: string; port?: number }
-\`\`\`
+```
 
 ### 4.5 Agent 场景中的条件类型实战
 
-\`\`\`typescript
+```typescript
 // 根据工具名称推断其输入类型
 interface SearchInput { query: string; limit?: number }
 interface CodeInput { language: string; code: string }
@@ -409,7 +397,7 @@ function callTool<K extends keyof ToolMap>(
 callTool('search', { query: 'AI Agent', limit: 10 })
 // ❌ 类型错误：execute_code 需要 language 和 code
 callTool('execute_code', { query: 'test' })
-\`\`\`
+```
 
 ---
 
@@ -417,7 +405,7 @@ callTool('execute_code', { query: 'test' })
 
 ### 练习 1：实现类型安全的 Agent 消息构建器
 
-\`\`\`typescript
+```typescript
 type Role = 'system' | 'user' | 'assistant' | 'tool'
 
 interface BaseMessage {
@@ -454,11 +442,11 @@ function createMessage<R extends Role>(
 // 使用
 const toolMsg = createMessage('tool', 'result', { toolCallId: 'call_123' })
 const userMsg = createMessage('user', '你好')
-\`\`\`
+```
 
 ### 练习 2：实现 DeepPartial
 
-\`\`\`typescript
+```typescript
 type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
 }
@@ -472,7 +460,7 @@ interface AgentConfig {
 const config: DeepPartial<AgentConfig> = {
   model: { temperature: 0.7 }  // name 可选
 }
-\`\`\`
+```
 
 ---
 
@@ -480,10 +468,10 @@ const config: DeepPartial<AgentConfig> = {
 
 | 概念 | 核心语法 | 典型场景 |
 |------|---------|---------|
-| 泛型 | \`<T>\` | 可复用的函数/接口/类 |
-| 联合类型 | \`A \\| B\` | 多种可能的类型、状态枚举 |
-| 交叉类型 | \`A & B\` | 能力组合、类型合并 |
-| 条件类型 | \`T extends U ? X : Y\` | 类型分支、类型推断提取 |
+| 泛型 | `<T>` | 可复用的函数/接口/类 |
+| 联合类型 | `A \| B` | 多种可能的类型、状态枚举 |
+| 交叉类型 | `A & B` | 能力组合、类型合并 |
+| 条件类型 | `T extends U ? X : Y` | 类型分支、类型推断提取 |
 
 ### 关键收获
 
@@ -495,8 +483,8 @@ const config: DeepPartial<AgentConfig> = {
 ### 与 AI Agent 的关联
 
 这些类型系统特性在后续学习中会频繁出现：
-- LangChain.js 的 \`Runnable<RunInput, RunOutput>\` 泛型
-- Vercel AI SDK 的 \`tool()\` 函数使用 Zod 做参数校验，背后是条件类型
+- LangChain.js 的 `Runnable<RunInput, RunOutput>` 泛型
+- Vercel AI SDK 的 `tool()` 函数使用 Zod 做参数校验，背后是条件类型
 - 多 Agent 编排中，消息流的类型安全依赖联合类型与收窄
 
 ---
@@ -530,172 +518,3 @@ const config: DeepPartial<AgentConfig> = {
 ---
 
 > 💪 84 天学习计划已正式启动，千里之行始于足下！
-
-    `.trim(),
-  },
-
-  {
-    id: '1',
-    title: '用 React + Zustand 构建现代 Web 应用',
-    slug: 'building-modern-web-apps-with-react-zustand',
-    date: '2026-06-20',
-    tags: ['React', 'Zustand', 'TypeScript'],
-    excerpt: 'Zustand 是一个轻量级的状态管理库，与 React 配合使用可以优雅地管理应用状态。本文介绍如何在实际项目中落地。',
-    readingTime: 8,
-    content: `
-## 为什么选择 Zustand？
-
-在 React 生态中，状态管理方案层出不穷。从最早的 Redux，到后来的 MobX、Recoil、Jotai，每个方案都有自己的哲学。Zustand 是其中最为轻量、直觉化的一个。
-
-### 核心优势
-
-\`\`\`typescript
-import { create } from 'zustand'
-
-interface CounterState {
-  count: number
-  increment: () => void
-  decrement: () => void
-}
-
-const useCounterStore = create<CounterState>((set) => ({
-  count: 0,
-  increment: () => set((state) => ({ count: state.count + 1 })),
-  decrement: () => set((state) => ({ count: state.count - 1 })),
-}))
-\`\`\`
-
-- **极简 API**：不需要 Provider 包裹，不需要 action creator
-- **类型安全**：原生 TypeScript 支持，自动推导类型
-- **灵活**：可以在组件外部读写 state
-- **性能优秀**：细粒度订阅，只 re-render 相关组件
-
-### 与 React Query 配合
-
-对于服务端状态，建议用 React Query 或 SWR；Zustand 专注于客户端状态。两者分工明确。
-    `.trim(),
-  },
-  {
-    id: '2',
-    title: 'TypeScript 高级类型体操实战',
-    slug: 'advanced-typescript-type-challenges',
-    date: '2026-06-15',
-    tags: ['TypeScript', '前端'],
-    excerpt: '从条件类型到模板字面量类型，深入 TypeScript 的类型系统，写出更安全、更优雅的代码。',
-    readingTime: 12,
-    content: `
-## 条件类型
-
-条件类型是 TypeScript 类型系统的核心能力之一，它让我们可以根据类型关系做分支判断。
-
-\`\`\`typescript
-type IsString<T> = T extends string ? true : false
-
-type A = IsString<'hello'>  // true
-type B = IsString<42>        // false
-\`\`\`
-
-### infer 关键字
-
-\`infer\` 让我们在条件类型中声明待推断的类型变量：
-
-\`\`\`typescript
-type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never
-
-type Fn = (x: number) => string
-type R = ReturnType<Fn>  // string
-\`\`\`
-
-### 模板字面量类型
-
-\`\`\`typescript
-type EventName = \`on\${Capitalize<string>}\`
-// 'onChange' | 'onClick' | 'onSubmit' ...
-\`\`\`
-
-合理使用这些高级类型，可以让你的代码在编译期就捕获大量潜在错误。
-    `.trim(),
-  },
-  {
-    id: '3',
-    title: 'Vite 插件开发入门指南',
-    slug: 'vite-plugin-development-guide',
-    date: '2026-06-08',
-    tags: ['Vite', '构建工具', '前端工程化'],
-    excerpt: '从零开始开发一个 Vite 插件，理解 Vite 的插件系统和构建流程。',
-    readingTime: 10,
-    content: `
-## Vite 插件是什么？
-
-Vite 插件是一个具有特定钩子函数的对象，这些钩子会在构建过程的不同阶段被调用。
-
-### 一个简单的例子
-
-\`\`\`typescript
-import type { Plugin } from 'vite'
-
-function myPlugin(): Plugin {
-  return {
-    name: 'my-plugin',
-    transform(code, id) {
-      if (id.endsWith('.special')) {
-        return {
-          code: \`export default \${JSON.stringify(code)}\`,
-          map: null,
-        }
-      }
-    },
-  }
-}
-\`\`\`
-
-### 插件钩子
-
-Vite 插件支持 Rollup 的所有钩子，并额外提供了一些 Vite 特有的钩子：
-
-- \`config\` - 修改 Vite 配置
-- \`configureServer\` - 配置开发服务器
-- \`transformIndexHtml\` - 转换 index.html
-- \`handleHotUpdate\` - 自定义 HMR 更新
-
-开发插件是理解 Vite 内部机制的最佳途径。
-    `.trim(),
-  },
-  {
-    id: '4',
-    title: '个人博客搭建：从设计到部署',
-    slug: 'building-personal-blog-from-design-to-deploy',
-    date: '2026-05-28',
-    tags: ['博客', 'React', 'Vite', '全栈'],
-    excerpt: '记录我搭建这个博客的完整过程，包括技术选型、架构设计、组件规划和部署策略。',
-    readingTime: 15,
-    content: `
-## 技术选型
-
-搭建个人博客时，技术选型是最重要的决策之一。我的选择：
-
-| 层面 | 技术 | 理由 |
-|------|------|------|
-| 框架 | React 18 | 生态成熟，社区活跃 |
-| 构建 | Vite 5 | 极速 HMR，零配置启动 |
-| 状态管理 | Zustand | 轻量、类型安全、无 Provider |
-| 路由 | React Router v6 | SPA 标配，嵌套路由方便 |
-| 样式 | CSS Modules | 局部作用域，无运行时开销 |
-| 内容 | Markdown | 写作体验好，易于迁移 |
-
-### 架构设计
-
-整个应用分为三层：
-
-1. **数据层** — 博客文章数据（静态 Markdown / CMS）
-2. **状态层** — Zustand stores（主题、搜索、筛选）
-3. **视图层** — React 页面组件 + 通用组件
-
-### 关于 SEO
-
-对于纯静态博客，可以使用 Vite 的静态生成功能或在构建时预渲染 HTML。更复杂的场景可以上 Next.js 或 Astro。
-
-我的选择是保持 SPA 架构，对搜索引擎来说，只要内容加载快就足够了。
-    `.trim(),
-  },
-]
