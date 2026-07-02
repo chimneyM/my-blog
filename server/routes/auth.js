@@ -3,7 +3,7 @@ import { generateToken, authMiddleware } from '../middleware/auth.js'
 
 const router = Router()
 
-const ADMIN_PASSWORD = 'chimneyM'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'chimneyM'
 
 router.post('/login', (req, res) => {
   const { password } = req.body

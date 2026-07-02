@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = 'chimneyM-blog-secret-key-2026'
+const JWT_SECRET = process.env.JWT_SECRET || 'chimneyM-blog-secret-key-2026'
 
 export function generateToken() {
   return jwt.sign({ user: 'chimneyM' }, JWT_SECRET, { expiresIn: '7d' })

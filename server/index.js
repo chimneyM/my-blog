@@ -11,7 +11,19 @@ const __dirname = dirname(__filename)
 const app = express()
 const PORT = process.env.PORT || 3001
 
-app.use(cors({ origin: 'http://localhost:5179', credentials: true }))
+// CORS 配置，支持开发和生产环境
+const allowedOrigins = []
+if (process.env.NODE_ENV === 'development') {
+  allowedOrigins.push('http://localhost:5179')
+}
+if (process.env.CORS_ORIGIN) {
+  allowedOrigins.push(process.env.CORS_ORIGIN)
+}
+
+app.use(cors({ 
+  origin: allowedOrigins.length > 0 ? allowedOrigins : '*',
+  credentials: true 
+}))
 app.use(express.json({ limit: '5mb' }))
 
 // API routes
