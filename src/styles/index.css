@@ -11,8 +11,8 @@
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
 
-  --max-width: 720px;
-  --content-padding: 1.5rem;
+  --max-width: 1100px;
+  --content-padding: 2rem;
 
   --radius-sm: 6px;
   --radius-md: 8px;
@@ -149,14 +149,18 @@ img {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+  height: 100%;
 }
 
 .nav-link {
+  display: flex;
+  align-items: center;
   padding: 0.4rem 0.75rem;
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
   color: var(--text-secondary);
   transition: all var(--transition);
+  line-height: 1;
 }
 
 .nav-link:hover {
@@ -184,6 +188,222 @@ img {
 
 .theme-toggle:hover {
   border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* ===== User Menu (头像下拉) ===== */
+.user-menu {
+  position: relative;
+  margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.avatar-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  border-radius: 100px;
+  padding: 0.2rem 0.6rem 0.2rem 0.2rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.avatar-btn:hover {
+  background: none;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* 未登录默认头像 emoji 字号适配 */
+.avatar-icon {
+  font-size: 0.9rem;
+}
+
+.user-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.arrow {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform var(--transition);
+}
+
+.arrow.up {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 180px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  z-index: 200;
+  animation: dropdownIn 0.15s ease;
+}
+
+@keyframes dropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  background: none;
+  border: none;
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: none;
+  font-family: inherit;
+  text-align: left;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.dropdown-item.active {
+  color: var(--accent);
+  background: var(--accent-light);
+}
+
+.dropdown-item.logout {
+  color: #e53e3e;
+  border-top: 1px solid var(--border);
+}
+
+.dropdown-item.logout:hover {
+  background: rgba(229, 62, 62, 0.08);
+  color: #c53030;
+}
+
+.dropdown-icon {
+  font-size: 0.95rem;
+  flex-shrink: 0;
+}
+
+/* 移动端工具栏（默认隐藏，移动端显示） */
+.nav-mobile-actions {
+  display: none;
+  align-items: center;
+  gap: 0.4rem;
+  height: 100%;
+}
+
+.login-mobile {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* 汉堡菜单按钮 */
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 0 6px;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.hamburger:hover {
+  border-color: var(--accent);
+}
+
+.hamburger span {
+  display: block;
+  height: 2px;
+  width: 100%;
+  background: var(--text-primary);
+  border-radius: 2px;
+  transition: all var(--transition);
+}
+
+.hamburger span.open:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.hamburger span.open:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger span.open:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* 移动端导航抽屉 */
+.mobile-nav {
+  display: none;
+  flex-direction: column;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+}
+
+.mobile-nav.open {
+  max-height: 300px;
+}
+
+.mobile-nav-link {
+  padding: 0.85rem var(--content-padding);
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  border-bottom: 1px solid var(--border);
+  transition: all var(--transition);
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+  color: var(--accent);
   background: var(--accent-light);
 }
 
@@ -636,9 +856,27 @@ img {
 }
 
 /* ===== Responsive ===== */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   :root {
     --content-padding: 1rem;
+  }
+
+  /* 隐藏 PC 导航，显示移动端工具栏 */
+  .nav-desktop {
+    display: none;
+  }
+
+  .nav-mobile-actions {
+    display: flex;
+  }
+
+  .mobile-nav {
+    display: flex;
+  }
+
+  /* 移动端头像下拉不显示用户名，只显示头像 */
+  .user-name {
+    display: none;
   }
 
   .hero {
@@ -663,6 +901,18 @@ img {
 
   .section-header {
     flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-inner {
+    height: 52px;
+  }
+
+  .avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 0.75rem;
   }
 }
 
@@ -799,8 +1049,14 @@ img {
 
 .admin-actions-cell {
   white-space: nowrap;
-  display: flex;
-  gap: 0.4rem;
+}
+
+.admin-actions-cell > * {
+  display: inline-flex;
+}
+
+.admin-actions-cell .btn-sm + .btn-sm {
+  margin-left: 0.4rem;
 }
 
 .loading-text {

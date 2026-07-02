@@ -1,15 +1,13 @@
 import { Outlet } from 'react-router-dom'
 import Header from './Header'
 import ParticleBackground from './ParticleBackground'
-import { useThemeStore } from '../stores/themeStore'
 import { useEffect } from 'react'
 
 export default function Layout() {
-  const theme = useThemeStore((s) => s.theme)
-
+  // 固定使用暗色主题
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme)
-  }, [theme])
+    document.documentElement.setAttribute('data-theme', 'dark')
+  }, [])
 
   return (
     <div className="app-layout">
