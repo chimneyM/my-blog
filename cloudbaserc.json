@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "envId": "",
+  "envId": "chimneym-d6gkd2hmd9662b981",
   "services": [
     {
       "name": "my-blog",
@@ -20,5 +20,8 @@
         "maxReplicas": 1
       }
     }
-  ]
+  ],
+  "cloudrun": {
+    "name": "my-blog"
+  }
 }

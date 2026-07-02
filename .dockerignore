@@ -6,11 +6,13 @@ dist
 .env.local
 *.log
 .DS_Store
+.playwright-cli
 post_examples
 README.md
 DEPLOYMENT.md
 AGENTS.md
 blog-generator.skill.md
-tsconfig*.json
-tsconfig*.tsbuildinfo
+tsconfig.node.tsbuildinfo
+tsconfig.app.tsbuildinfo
 .vercel
+vercel.json
