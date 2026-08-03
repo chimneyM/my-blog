@@ -9634,171 +9634,6 @@ const config: DeepPartial<AgentConfig> = {
   },
 
   {
-    id: '1',
-    title: '用 React + Zustand 构建现代 Web 应用',
-    slug: 'building-modern-web-apps-with-react-zustand',
-    date: '2026-06-20',
-    tags: ['React', 'Zustand', 'TypeScript'],
-    excerpt: 'Zustand 是一个轻量级的状态管理库，与 React 配合使用可以优雅地管理应用状态。本文介绍如何在实际项目中落地。',
-    readingTime: 8,
-    content: `
-## 为什么选择 Zustand？
-
-在 React 生态中，状态管理方案层出不穷。从最早的 Redux，到后来的 MobX、Recoil、Jotai，每个方案都有自己的哲学。Zustand 是其中最为轻量、直觉化的一个。
-
-### 核心优势
-
-\`\`\`typescript
-import { create } from 'zustand'
-
-interface CounterState {
-  count: number
-  increment: () => void
-  decrement: () => void
-}
-
-const useCounterStore = create<CounterState>((set) => ({
-  count: 0,
-  increment: () => set((state) => ({ count: state.count + 1 })),
-  decrement: () => set((state) => ({ count: state.count - 1 })),
-}))
-\`\`\`
-
-- **极简 API**：不需要 Provider 包裹，不需要 action creator
-- **类型安全**：原生 TypeScript 支持，自动推导类型
-- **灵活**：可以在组件外部读写 state
-- **性能优秀**：细粒度订阅，只 re-render 相关组件
-
-### 与 React Query 配合
-
-对于服务端状态，建议用 React Query 或 SWR；Zustand 专注于客户端状态。两者分工明确。
-    `.trim(),
-  },
-  {
-    id: '2',
-    title: 'TypeScript 高级类型体操实战',
-    slug: 'advanced-typescript-type-challenges',
-    date: '2026-06-15',
-    tags: ['TypeScript', '前端'],
-    excerpt: '从条件类型到模板字面量类型，深入 TypeScript 的类型系统，写出更安全、更优雅的代码。',
-    readingTime: 12,
-    content: `
-## 条件类型
-
-条件类型是 TypeScript 类型系统的核心能力之一，它让我们可以根据类型关系做分支判断。
-
-\`\`\`typescript
-type IsString<T> = T extends string ? true : false
-
-type A = IsString<'hello'>  // true
-type B = IsString<42>        // false
-\`\`\`
-
-### infer 关键字
-
-\`infer\` 让我们在条件类型中声明待推断的类型变量：
-
-\`\`\`typescript
-type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never
-
-type Fn = (x: number) => string
-type R = ReturnType<Fn>  // string
-\`\`\`
-
-### 模板字面量类型
-
-\`\`\`typescript
-type EventName = \`on\${Capitalize<string>}\`
-// 'onChange' | 'onClick' | 'onSubmit' ...
-\`\`\`
-
-合理使用这些高级类型，可以让你的代码在编译期就捕获大量潜在错误。
-    `.trim(),
-  },
-  {
-    id: '3',
-    title: 'Vite 插件开发入门指南',
-    slug: 'vite-plugin-development-guide',
-    date: '2026-06-08',
-    tags: ['Vite', '构建工具', '前端工程化'],
-    excerpt: '从零开始开发一个 Vite 插件，理解 Vite 的插件系统和构建流程。',
-    readingTime: 10,
-    content: `
-## Vite 插件是什么？
-
-Vite 插件是一个具有特定钩子函数的对象，这些钩子会在构建过程的不同阶段被调用。
-
-### 一个简单的例子
-
-\`\`\`typescript
-import type { Plugin } from 'vite'
-
-function myPlugin(): Plugin {
-  return {
-    name: 'my-plugin',
-    transform(code, id) {
-      if (id.endsWith('.special')) {
-        return {
-          code: \`export default \${JSON.stringify(code)}\`,
-          map: null,
-        }
-      }
-    },
-  }
-}
-\`\`\`
-
-### 插件钩子
-
-Vite 插件支持 Rollup 的所有钩子，并额外提供了一些 Vite 特有的钩子：
-
-- \`config\` - 修改 Vite 配置
-- \`configureServer\` - 配置开发服务器
-- \`transformIndexHtml\` - 转换 index.html
-- \`handleHotUpdate\` - 自定义 HMR 更新
-
-开发插件是理解 Vite 内部机制的最佳途径。
-    `.trim(),
-  },
-  {
-    id: '4',
-    title: '个人博客搭建：从设计到部署',
-    slug: 'building-personal-blog-from-design-to-deploy',
-    date: '2026-05-28',
-    tags: ['博客', 'React', 'Vite', '全栈'],
-    excerpt: '记录我搭建这个博客的完整过程，包括技术选型、架构设计、组件规划和部署策略。',
-    readingTime: 15,
-    content: `
-## 技术选型
-
-搭建个人博客时，技术选型是最重要的决策之一。我的选择：
-
-| 层面 | 技术 | 理由 |
-|------|------|------|
-| 框架 | React 18 | 生态成熟，社区活跃 |
-| 构建 | Vite 5 | 极速 HMR，零配置启动 |
-| 状态管理 | Zustand | 轻量、类型安全、无 Provider |
-| 路由 | React Router v6 | SPA 标配，嵌套路由方便 |
-| 样式 | CSS Modules | 局部作用域，无运行时开销 |
-| 内容 | Markdown | 写作体验好，易于迁移 |
-
-### 架构设计
-
-整个应用分为三层：
-
-1. **数据层** — 博客文章数据（静态 Markdown / CMS）
-2. **状态层** — Zustand stores（主题、搜索、筛选）
-3. **视图层** — React 页面组件 + 通用组件
-
-### 关于 SEO
-
-对于纯静态博客，可以使用 Vite 的静态生成功能或在构建时预渲染 HTML。更复杂的场景可以上 Next.js 或 Astro。
-
-我的选择是保持 SPA 架构，对搜索引擎来说，只要内容加载快就足够了。
-    `.trim(),
-  },
-,
-  {
     id: "15",
     title: "AI Agent 学习计划 Day 13：AI Agent 概念 — Memory 与 Planning",
     slug: "ai-agent-day13-memory-planning",
@@ -10005,5 +9840,16 @@ Vite 插件支持 Rollup 的所有钩子，并额外提供了一些 Vite 特有�
     excerpt: "深入 useChat 的前端集成：用 message.parts 自定义渲染文本/工具调用/附件、消息角色与样式、加载与错误处理、打字机光标、附件上传与多模态、以及在 Next.js 中的目录组织。",
     readingTime: 12,
     content: "## 回顾与今天的目标\n\nDay 28 我们跑通了 `useChat` 的最小聊天页。但真实产品远不止「渲染纯文本」：要自定义每条消息的样式、展示工具调用过程、上传文件（图片/文档）、处理加载与错误。今天聚焦**前端组件集成**。\n\n## 1. message 的数据结构：用 parts 而非直接读 content\n\n`useChat` 返回的 `messages` 中，每条 `UIMessage` 现在推荐用 `parts` 数组渲染（比 `content` 字符串更结构化，能区分文本、工具调用、文件等）：\n\n```tsx\n{messages.map((message) => (\n  <div key={message.id} className={message.role === 'user' ? 'user' : 'assistant'}>\n    {message.parts.map((part, i) => {\n      if (part.type === 'text') return <span key={i}>{part.text}</span>;\n      if (part.type === 'tool-invocation')\n        return <ToolCard key={i} call={part.toolInvocation} />;\n      return null;\n    })}\n  </div>\n))}\n```\n\n`parts` 的好处：流式期间文本会持续更新，而工具调用（Day 30/31 才讲定义，今天先了解渲染形态）以独立 part 存在，UI 可单独展示「正在调用天气工具…」这类中间态。\n\n## 2. 自定义消息组件与样式\n\n把每条消息抽成独立组件，便于复用与做思考气泡：\n\n```tsx\nfunction ChatMessage({ message }: { message: UIMessage }) {\n  const isUser = message.role === 'user';\n  return (\n    <div className={`msg ${isUser ? 'msg-user' : 'msg-ai'}`}>\n      <Avatar role={message.role} />\n      <div className=\"bubble\">\n        {message.parts.map(/* 按 part.type 渲染 */)}\n      </div>\n    </div>\n  );\n}\n```\n\n要点：\n- 用 `role` 区分左右对齐与配色（user 靠右、assistant 靠左）\n- AI 消息可加打字机光标：当 `status === 'streaming'` 且是最后一条 assistant 消息时，在文本末尾加闪烁 `▍`\n\n## 3. 加载、错误与空态\n\n```tsx\nconst { messages, status, error, reload } = useChat();\n\nif (status === 'submitted') return <Spinner />;   // 已发送、等待首字\nif (error) return <ErrorBox onRetry={reload} />;    // 出错可 reload 重试\nif (messages.length === 0) return <EmptyHint />;    // 首屏引导\n```\n\n`status` 四态：`submitted`（已提交、等首字）→ `streaming`（流式输出中）→ `ready`（完成）→ `error`。用 `reload()` 可在不新增用户输入的情况下重新请求（重新生成）。\n\n## 4. 附件上传与多模态\n\n`useChat` 原生支持 `experimental_attachments`：\n\n```tsx\nconst { messages, input, handleInputChange, handleSubmit, experimental_attachments, setAttachments } = useChat();\n\n// 选择文件后设置\nconst onFile = (e) => setAttachments(Array.from(e.target.files ?? []));\n\n<form onSubmit={(e) => handleSubmit(e, { experimental_attachments: attachments })}>\n  <input type=\"file\" multiple onChange={onFile} />\n  <input value={input} onChange={handleInputChange} />\n</form>\n```\n\n服务端 `streamText` 的 `messages` 会自动带上附件（图片以 `image` part 传入），模型若为多模态（如 `gpt-4o`）即可「看图说话」。注意前端要展示已选附件缩略图，并在发送后清空 `setAttachments([])`。\n\n## 5. 在 Next.js 中的目录组织\n\n```\napp/\n  api/chat/route.ts        # 服务端流（'use server' 不需要，route 默认服务端）\n  chat/page.tsx            # 'use client' 聊天页，调用 useChat\ncomponents/\n  ChatMessage.tsx          # 单条消息组件\n  ToolCard.tsx             # 工具调用卡片（Day 30/31 用到）\n  ChatInput.tsx            # 输入框 + 附件\n```\n\n把 UI 拆成 `ChatMessage` / `ChatInput` / `ToolCard`，主页面只负责组装 `useChat` 状态，可读性高、易测试。\n\n## 6. 与 Day 28 的衔接\n\n| 维度 | Day 28（基础） | Day 29（集成） |\n| --- | --- | --- |\n| 渲染 | 直接 `{m.content}` | `m.parts` 按类型自定义 |\n| 消息样式 | 朴素 div | 角色对齐/气泡/头像 |\n| 交互 | 仅发送/停止 | 附件上传、重新生成、错误重试 |\n| 多模态 | 不支持 | 图片附件 + 多模态模型 |\n\n**先有 Day 28 的骨架，再在 Day 29 上加肉**，避免一上来就堆样式导致逻辑混乱。\n\n## 7. 常见坑\n\n1. **还用 `content` 而非 `parts`**：旧版 `content` 是字符串，新版推荐 `parts` 才能渲染工具调用/附件，混用会丢信息。\n2. **附件发完不清理**：`setAttachments([])` 要在 `handleSubmit` 后调用，否则下次发送会重复带旧文件。\n3. **key 用 index**：`parts.map` 同样要用稳定 key（part 内部无 id 时可用 `i`，但 messages 必须用 `m.id`）。\n4. **文件过大未限制**：上传前校验类型/大小，否则请求体爆炸、模型拒收。\n5. **多模态模型不匹配**：传图片却用纯文本模型（如 `gpt-3.5`），会报错或无视图片。\n6. **忘记 `'use client'`**：含 `useChat` 的组件必须客户端组件。\n\n## 小结\n\nDay 29 把 `useChat` 从「能跑」提升到「像产品」：用 `message.parts` 按类型自定义渲染、`status`/`error`/`reload` 做完整交互态、附件上传打通多模态。记住：①用 `parts` 不用 `content`；②附件发完清空、校验大小；③组件拆分（ChatMessage/ChatInput/ToolCard）。Day 30 起进入 Tool Calling，前面的 `tool-invocation` part 就会真正派上用场。",
+  }
+,
+  {
+    id: "34",
+    title: "Vercel AI SDK - Tool Calling（上）：结构化工具定义与调用",
+    slug: "ai-agent-day30-vercel-tool-calling-upper",
+    date: "2026-07-31",
+    tags: ["AI Agent","Vercel AI SDK","Tool Calling","tool()","Zod","函数调用"],
+    excerpt: "Agent 的真正能力来自「调用工具」。今天正式进入 Vercel AI SDK 的工具调用：用 tool() 定义结构化工具（名称/描述/入参 schema）、在 generateText/streamText 中挂载、解析 model 返回的 toolCalls 并在本地执行，跑通「模型→工具→结果→模型」的第一次工具循环。",
+    readingTime: 12,
+    content: "## 回顾与今天的目标\n\nDay 26-29 我们打通了 Vercel AI SDK 的「文本生成」与「流式 UI」。但一个只会聊天的模型不是 Agent——Agent 的精髓是**能调用外部工具**（查天气、算数学、查数据库、调 API、读写文件）。\n\nDay 12 我们用 OpenAI 原生 Function Calling 讲过工具调用范式；今天用 **Vercel AI SDK 的 `tool()` 封装**把这套范式落到更省心的代码里，并重点讲清楚**结构化工具定义**与**一次完整的工具循环**。\n\n## 1. 为什么需要工具调用\n\nLLM 本质是「概率文本生成器」，它本身：\n- 不知道实时信息（天气、股价、最新新闻）\n- 不擅长精确计算（大数乘法、日期差）\n- 不能直接操作外部系统（数据库、文件系统、第三方 API）\n\n工具调用（Tool Calling）让模型在生成文本之外，还能**输出「我要调用哪个工具 + 什么参数」的结构化指令**，由我们本地执行后把结果喂回去。这就是 Agent Loop 的核心。\n\n## 2. `tool()` 函数：结构化定义工具\n\nVercel AI SDK 用 `tool()` 把「工具」抽象成一个对象，包含三要素：\n\n```ts\nimport { tool } from 'ai';\nimport { z } from 'zod';\n\nconst weatherTool = tool({\n  // ① 名称：模型靠它识别要调哪个工具（建议动宾、清晰）\n  description: '获取指定城市的当前天气（温度、天气状况）',\n  // ② 入参 schema：用 zod 描述参数，SDK 会自动生成 JSON Schema 给模型\n  parameters: z.object({\n    city: z.string().describe('城市名称，如 \"上海\"'),\n    unit: z.enum(['celsius', 'fahrenheit']).default('celsius'),\n  }),\n  // ③ 执行函数：真正干活的地方（可以 async，可访问 DB/API）\n  execute: async ({ city, unit }) => {\n    const data = await fetchWeather(city, unit); // 你的实现\n    return data; // 返回对象，SDK 会序列化给模型\n  },\n});\n```\n\n要点：\n- **`description` 写清楚**：模型靠描述判断「何时该用这个工具」。含糊的描述（如\"处理数据\"）会导致该调不调、或不该调乱调。\n- **`parameters` 用 zod**：`zod` 同时承担「参数校验」与「生成 JSON Schema 给模型」两件事；`describe()` 让模型理解每个字段含义。\n- **`execute` 是本地代码**：工具真正的能力（网络请求、DB 查询）在这里发生，模型只决定「调不调、传什么参」。\n\n> 如果你不想用 zod，也可直接传 `parameters: { type: 'object', properties: {...}, required: [...] }` 的原生 JSON Schema，但 zod 更顺手且自带校验。\n\n## 3. 把工具挂到模型调用上\n\n在 `generateText` / `streamText` 里通过 `tools` 字段挂载：\n\n```ts\nimport { generateText } from 'ai';\nimport { openai } from '@ai-sdk/openai';\n\nconst { text, toolCalls, toolResults } = await generateText({\n  model: openai('gpt-4o-mini'),\n  prompt: '上海现在天气怎么样？适合穿短袖吗？',\n  tools: { weather: weatherTool }, // 多个工具用对象挂上\n});\n```\n\n- 如果模型判断**不需要工具**，则 `toolCalls` 为空，直接返回 `text`。\n- 如果模型**需要工具**，则 `toolCalls` 里会有 `{ toolName: 'weather', args: { city: '上海' } }`，`text` 通常为空（模型在等工具结果）。\n\n## 4. 模型返回 toolCalls → 本地执行 → 结果回灌\n\n`tool()` 里写了 `execute`，Vercel AI SDK 会**自动**执行并把结果放进 `toolResults`。但更可控的做法是**手动循环**（尤其当你要在回灌前做鉴权/日志/限流时）：\n\n```ts\nimport { generateText, tool } from 'ai';\n\n// 不带 execute，只定义「契约」，执行我们自己控制\nconst weatherOnly = tool({\n  description: '获取指定城市的当前天气',\n  parameters: z.object({ city: z.string() }),\n});\n\nlet response = await generateText({\n  model: openai('gpt-4o-mini'),\n  prompt: '上海现在天气怎么样？',\n  tools: { weather: weatherOnly },\n});\n\n// 第一次：模型返回 toolCalls，但还没结果\nfor (const call of response.toolCalls ?? []) {\n  if (call.toolName === 'weather') {\n    const result = await fetchWeather(call.args.city); // 本地执行\n    response = await generateText({\n      model: openai('gpt-4o-mini'),\n      prompt: '上海现在天气怎么样？',\n      tools: { weather: weatherOnly },\n      // 把工具调用 + 执行结果作为 messages 回灌给模型\n      messages: [\n        ...response.messages,\n        {\n          role: 'tool',\n          content: [\n            { type: 'tool-result', toolCallId: call.toolCallId, result },\n          ],\n        },\n      ],\n    });\n  }\n}\nconsole.log(response.text); // 最终自然语言回答\n```\n\n关键：\n- 工具结果以 `role: 'tool'` 的消息回灌，且必须带 `toolCallId` 与原始 `toolCalls` 对应（SDK 靠 id 配对）。\n- 这一步就是 Day 12 讲的「Agent Loop」：模型决策 → 我们执行 → 结果回传 → 模型再决策，直到产出最终答案。\n\n## 5. 流式场景下的工具调用\n\n`streamText` 同样支持 `tools`，前端能看到「工具调用中」的中间态（回顾 Day 29 的 `tool-invocation` part）：\n\n```ts\nconst result = streamText({\n  model: openai('gpt-4o-mini'),\n  prompt: '北京和东京谁更热？',\n  tools: { weather: weatherTool }, // 带 execute 时自动执行\n});\n\n// 服务端转发 UI Message Stream，前端 useChat 的 message.parts\n// 会自然出现 type: 'tool-invocation' 的 part，可展示「正在查询北京天气…」\nreturn result.toUIMessageStreamResponse();\n```\n\n带 `execute` 的 `streamText` 会在流内部自动完成「调用→执行→回灌→续生成」，前端无需手动循环，体验最佳。\n\n## 6. 与 LangChain tool 的对比\n\n| 维度 | Vercel AI SDK `tool()` | LangChain `@tool` |\n|------|------------------------|-------------------|\n| 入参定义 | zod / JSON Schema | zod（`@tool` 装饰器） |\n| 执行 | `execute` 字段 / 手动循环 | 函数体即执行 |\n| 自动执行 | 带 `execute` 时自动 | AgentExecutor 统一调度 |\n| 模型绑定 | `tools` 字段挂到 generate/stream | 绑到 Agent |\n| 流式工具态 | `tool-invocation` part 天然可见 | 需 verbose / 中间件 |\n\n结论：Vercel AI SDK 更轻、更贴近「手动编排 Agent Loop」；LangChain 更偏「框架帮你跑完整个 Agent」。两者工具定义理念一致（名称/描述/schema/执行）。\n\n## 7. 常见坑\n\n- **`description` 太含糊** → 模型该调不调或乱调；写清「何时用、解决什么」。\n- **`parameters` 缺 `describe`** → 模型传参错位（如把城市名当成了国家）。\n- **工具名含空格/特殊字符** → 部分模型不友好，建议 `camelCase` 或 `kebab-case`。\n- **`execute` 抛错没兜底** → 整个调用链崩；务必 `try/catch` 并返回结构化错误给模型，让它自我纠正。\n- **回灌漏了 `toolCallId`** → 模型无法把结果与调用配对，会报错或乱答。\n- **忘记限流/鉴权** → 工具能调外部 API/花真钱，生产环境务必加权限校验与速率限制。\n- **Node 版本过低** → `ai` 包需要较新 Node，部署前确认运行环境版本。\n- **官方站不可访问** → 文档用国内镜像 `ai-sdk.com.cn`，下文链接已替换。\n\n## 学习资料与延伸\n\n- Vercel AI SDK 工具与工具调用（国内镜像）：https://ai-sdk.com.cn/docs/ai-sdk-core/tools-and-tool-calling\n- Vercel AI SDK 官方 Tools 文档：https://sdk.vercel.ai/docs/ai-sdk-core/tools-and-tool-calling\n- 完整深入教程（腾讯云）：https://cloud.tencent.com/developer/article/2630363\n- 中文实战教程（掘金）：https://juejin.cn/post/7604761524977500169\n\n## 今日小练习\n\n定义一个 `calculator` 工具（支持 `expression` 字符串，用 `eval` 的安全子集或 `math.js` 计算），挂到 `generateText`，问模型「(12 + 8) * 3 等于多少」，观察 `toolCalls` 与最终 `text`，并手动走一遍「回灌 tool-result」的循环。",
   }
 ]
