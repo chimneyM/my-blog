@@ -47,6 +47,8 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     try {
       const res = await fetch(`${API}/posts`)
       const posts: Post[] = await res.json()
+      // 按学习进程排序：date 升序（Day1 → Day34 → 最新）
+      posts.sort((a, b) => (a.date || '').localeCompare(b.date || ''))
       const { searchQuery, selectedTag } = get()
       set({
         posts,

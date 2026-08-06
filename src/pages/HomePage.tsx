@@ -4,7 +4,8 @@ import PostCard from '../components/PostCard'
 
 export default function HomePage() {
   const posts = useBlogStore((s) => s.posts)
-  const recentPosts = posts.slice(0, 3)
+  // 学习进程已按 date 升序，最新 3 篇取末尾并倒序（最新在上）
+  const recentPosts = posts.slice(-3).reverse()
 
   return (
     <div className="home-page">
