@@ -869,5 +869,22 @@
     "excerpt": "长期记忆让 Agent「跨会话不忘」——把重要信息存入向量数据库 + 摘要，按需语义检索召回。今天讲清长期记忆的写入/检索链路、与 RAG（Day 36-39）的同源复用，以及记忆的增删改与遗忘策略。",
     "readingTime": 14,
     "content": "# Day 54：记忆系统（三）— 长期记忆（向量数据库 + 摘要）\n\n## 一、为什么需要长期记忆\n\n短期/工作记忆都随会话结束消失，而 Agent 要**跨天、跨用户记住偏好、经验、知识**：\n\n- 用户画像（「我习惯用中文回复」）\n- 历史经验（「上次这个 bug 这么修的」）\n- 领域知识沉淀（相当于私人知识库）\n\n做法 = **向量数据库存语义片段 + 摘要压缩**，本质就是 Day 36-39 学过的 RAG 检索链路。\n\n## 二、写入链路\n\n```\n重要信息 → 摘要/切分 → Embedding → 存入向量库（带 metadata）\n```\n\n```ts\n// 用 Day 19 的 MemoryVectorStore 即可\nawait vectorStore.addDocuments([\n  new Document({ pageContent: '用户偏好：中文回复、简洁', metadata: { type: 'profile', userId } }),\n])\n```\n\n## 三、检索链路（语义召回）\n\n```ts\nconst hits = await vectorStore.similaritySearch(query, 3) // Top-3 相关记忆\n// 拼回 prompt 作为长期记忆上下文\n```\n\n- 与 Day 39 检索完全同源，可复用 `asRetriever()`\n- 生产用 Pinecone/Chroma（Day 38），开发用 MemoryVectorStore\n\n## 四、增删改与遗忘策略\n\n| 操作 | 做法 |\n|------|------|\n| 增 | 重要结论/偏好实时写入 |\n| 查 | 每轮 query 语义检索 Top-K |\n| 改 | 更新 metadata 或覆盖旧片段 |\n| 删/遗忘 | 过期记忆按 TTL 清理，防噪声累积 |\n\n## 五、三层记忆体系回顾（Day 52-54 汇总）\n\n| 层 | 范围 | 存储 | 对应模块 |\n|----|------|------|----------|\n| 工作记忆 | 单次任务 | Scratchpad/对象 | Day 53 |\n| 短期记忆 | 本轮对话 | messages 数组 | Day 52 |\n| 长期记忆 | 跨会话 | 向量库+摘要 | Day 54（今日） |\n\n## 六、常见坑\n\n| 坑 | 后果 | 规避 |\n|----|------|------|\n| 什么都存 | 噪声干扰检索 | 只存高价值信息 |\n| 嵌入模型不一致 | 召回失准 | 与 RAG 用同一模型 |\n| 永不清理 | 库膨胀变慢 | 加 TTL/遗忘策略 |\n| 敏感信息入向量库 | 隐私泄露 | 脱敏后再存 |\n| 官方站不可访问 | 卡文档 | 用国内镜像 |\n\n## 七、今日实践任务\n\n1. 用 MemoryVectorStore 建一个「用户偏好」长期记忆，写入 3 条并语义检索验证\n2. 把 Day 53 的工作记忆提炼结果沉淀进长期记忆\n3. 给长期记忆加一条「遗忘」函数（按 userId + TTL 清理），写进 README\n\n🔗 学习资料（国内可访问镜像）：\n- Pinecone 文档：https://docs.pinecone.io/ ✅\n- LangChain JS 中文 Retrieval：https://js.langchain.com.cn/docs/ ✅\n- LangChain 中文文档 Memory：https://langchain-doc.cn/ ✅\n- 菜鸟教程 AI Agent：https://www.runoob.com/ai-agent/ai-agent-tutorial.html ✅"
+  },
+  {
+    "id": "59",
+    "title": "AI Agent 学习计划 - Day 55：记忆系统（四）情景记忆",
+    "slug": "ai-agent-day55-memory-episodic",
+    "date": "2026-08-25",
+    "tags": [
+      "AI Agent",
+      "记忆系统",
+      "情景记忆",
+      "Episodic Memory",
+      "经验库",
+      "学习计划"
+    ],
+    "excerpt": "情景记忆让 Agent「记住发生过的事」——把每次交互的关键上下文（任务、决策、结果、反馈）按事件存储，未来遇到相似情境可召回借鉴。今天讲清情景记忆与长期记忆的区别、存储结构设计、检索应用，以及它在自我改进 Agent 中的价值。",
+    "readingTime": 13,
+    "content": "# Day 55：记忆系统（四）— 情景记忆（Episodic Memory）\n\n## 一、情景记忆是什么\n\n前三天学了：\n- **工作记忆**（Day 53）：单次任务草稿\n- **短期记忆**（Day 52）：本轮对话历史\n- **长期记忆**（Day 54）：跨会话的知识/偏好（向量库+摘要）\n\n**情景记忆**是长期记忆的一个专门子集，专门存「**事件**」：某次任务怎么做的、遇到什么坑、结果如何、用户给了什么反馈。\n\n> 类比人类：长期记忆像百科知识，情景记忆像「上次去 XXX 餐厅踩雷了」的具体经历。\n\n## 二、为什么 Agent 需要情景记忆\n\n- **经验复用**：下次遇到相似任务，直接召回「上次怎么做的」少走弯路\n- **自我改进**：把失败/成功案例沉淀，让 Agent 越用越聪明\n- **可解释**：出了问题能追溯「当时为什么这么决策」\n- 这是 Day 13 提过的「ReAct 多步推理 + 经验」的落地形态\n\n## 三、存储结构设计\n\n每条情景 = 一段结构化事件，最好带 metadata 便于检索：\n\n```ts\ntype Episode = {\n  id: string\n  task: string              // 任务描述\n  context: string          // 关键上下文\n  actions: string[]        // 采取了什么动作\n  outcome: 'success' | 'fail'\n  feedback?: string        // 用户/系统反馈\n  lesson: string           // 提炼的经验教训\n  embedding: number[]      // 用于语义检索\n  createdAt: string\n}\n```\n\n存法与 Day 54 长期记忆一致：Embedding + 向量库（Pinecone / MemoryVectorStore）。\n\n## 四、检索与应用\n\n```ts\n// 新任务到来时，召回相似历史情景\nconst similar = await vectorStore.similaritySearch(newTask, 3)\n// 拼进 prompt：「参考你之前的经验：...」\n```\n\n- 复现成功路径 → 提高成功率\n- 规避失败路径 → 减少重复犯错\n\n## 五、与长期记忆的关系\n\n```\n              ┌─ 知识/偏好（Day 54 长期记忆）\n长期记忆 ─────┤\n              └─ 情景/经历（Day 55 情景记忆，本日）\n```\n\n两者都跨会话、都用向量库，区别在**内容形态**：一个是「知道什么」，一个是「经历过什么」。\n\n## 六、常见坑\n\n| 坑 | 后果 | 规避 |\n|----|------|------|\n| 情景记太细（含无关噪声） | 检索被干扰 | 只存 lesson + 关键动作 |\n| 把工作记忆当情景永久存 | 临时草稿污染 | 任务结束再提炼入库 |\n| 失败情景无反馈字段 | 无法归因 | 强制 feedback/lesson |\n| 情景与知识混库 | 召回不精准 | 用 metadata.type 区分 |\n| 官方站不可访问 | 卡文档 | 用国内镜像 |\n\n## 七、今日实践任务\n\n1. 基于 Day 54 的向量库，加一个 `saveEpisode()` / `recallEpisode()`，存 2 条「踩坑经验」\n2. 写一个 prompt 模板，把召回情景作为「参考经验」注入\n3. 总结 Day 52-55 四层记忆体系一张表，写进 README（为 Day 56 阶段三总结铺垫）\n\n🔗 学习资料（国内可访问镜像）：\n- LangChain JS 中文 Memory：https://js.langchain.com.cn/docs/ ✅\n- LangChain 中文文档 Memory：https://langchain-doc.cn/ ✅\n- Pinecone 文档：https://docs.pinecone.io/ ✅\n- 菜鸟教程 AI Agent：https://www.runoob.com/ai-agent/ai-agent-tutorial.html ✅\n- 掘金 大模型记忆机制：https://juejin.cn/post/7353885796637274147 ✅"
   }
 ]
