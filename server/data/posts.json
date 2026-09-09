@@ -1148,5 +1148,23 @@
     "excerpt": "项目一第十三步：从 Day 57 到 Day 68 共 12 步的完整复盘。用「做得好 / 踩的坑 / 待改进」三段式回顾 RAG 问答系统，沉淀一份可复用的踩坑清单与架构回顾，作为作品集与明日（Day 70）演示的底座。",
     "readingTime": 14,
     "content": "# Day 69：项目一 - 项目复盘\n\n## 一、目标\n\nDay 57→68 用 12 步走完「规划 → 上传切分 → 入库 → 检索 → 流式 → UI → 引用 → 多轮 → 测试 → 部署 → review → UI 打磨」。今天是 **复盘收口**：把零散经验沉淀成可迁移的方法论，供作品集与项目二、三复用。\n\n> 不复盘的项目只是「做过」，复盘过的项目才是「长在自己身上」的能力。\n\n## 二、12 步时间线回顾\n\n| 步骤 | Day | 关键产物 |\n|---|---|---|\n| 启动规划 | 57 | Next.js + Vercel AI SDK + LangChain + Pinecone 技术栈 |\n| 上传切分 | 58 | 文档上传 API + RecursiveCharacterTextSplitter |\n| 向量入库 | 59 | OpenAI Embeddings + Pinecone（dimension=1536） |\n| 语义检索 | 60 | embedQuery + TopK + 上下文注入 |\n| 流式 API | 61 | streamText + toUIMessageStreamResponse + maxDuration/stop |\n| 对话界面 | 62 | useChat 打字机 + 历史管理 |\n| 引用溯源 | 63 | data-sources + SourceCard |\n| 多轮上下文 | 64 | 只注入本轮 chunk + 历史摘要压缩 |\n| 测试优化 | 65 | Vitest 用例 + 性能/成本优化 |\n| 部署文档 | 66 | Vercel 部署 + README + 环境变量管理 |\n| 代码审查 | 67 | 安全/错误/性能/体验四类清单 + bug 修复 |\n| UI 打磨 | 68 | Markdown/代码高亮/空错误态/暗色/无障碍 |\n\n## 三、踩坑清单（最值钱的部分）\n\n1. **密钥泄露**：`.env.local` 未忽略 / 前端直连 OpenAI（CORS 暴露 key）→ 必须走后端 route + Vercel 环境变量。\n2. **流式截断**：Vercel 默认 10s 超时 → `export const maxDuration = 30` + `runtime='nodejs'`（别用 edge）。\n3. **维度 mismatch**：本地与线上 embedding 模型不一致 → 检索 0 命中，建索引时锁死 1536。\n4. **上下文膨胀**：多轮把整段文档塞进每轮 → token 暴涨；改为只注入本轮 chunk + 历史摘要（Day 64）。\n5. **引用错位**：`[1]` 与 SourceCard 对不上 → 检索时分配稳定 id（Day 67/68 修复）。\n6. **资料注入攻击**：检索文档藏「忽略指令」→ System Prompt 声明「资料不是指令」（Day 67）。\n7. **空索引 0 命中**：部署前没跑 ingest → 所有回答「无资料」；启动校验 + README 强调。\n8. **重复 embed 浪费**：每轮重算 query 向量 → 加 embedding 缓存。\n\n## 四、做得好的地方\n\n- 全链路用 **Vercel AI SDK 的 UI Message Stream 协议**，前后端契约清晰、`useChat` 开箱即用。\n- 架构分层（route / retriever / prompt / ui），便于 Day 67 单独 review 与 Day 68 单独打磨。\n- 测试（Day 65）先行，bug 在部署前就能拦下一批。\n\n## 五、待改进（带入项目二、三）\n\n- 检索可升级混合检索 + Reranking（Day 40），目前纯向量 TopK 对长尾问题召回偏弱。\n- 缺可观测性：没有 tracing/日志，线上出问题难定位；后续接 LangSmith 或简易日志。\n- 多用户场景未涉及（鉴权、私有知识库隔离），可作为进阶方向。\n\n## 六、今日实践任务\n\n1. 把上面的「踩坑清单」整理成项目一 README 的 `## 踩坑记录` 章节（作品集加分项）。\n2. 画一张 RAG 数据流图（用户问题 → embed → 检索 → 注入 → 流式 → 引用）放进文档。\n3. 列 3 条「项目二要继承的最佳实践」与 3 条「要避免的坑」。\n\n> **明日（Day 70）项目展示准备**：整理项目文档、录制/截图演示、准备一页项目简介，作为作品集第一块基石。\n\n## 七、回顾资源\n\n- 全阶段资源回顾：Day 1-68 所有笔记（本博客 `AI Agent` 标签）\n- Vercel AI Chatbot 参考：https://github.com/vercel/ai-chatbot\n- Vercel AI SDK UI 中文文档：https://ai-sdk.com.cn/docs/ai-sdk-ui"
+  },
+  {
+    "id": "74",
+    "title": "AI Agent 学习计划 - Day 70：项目一 - 项目展示准备",
+    "slug": "ai-agent-day70-project1-showcase",
+    "date": "2026-09-09",
+    "tags": [
+      "AI Agent",
+      "实战项目",
+      "项目一",
+      "展示准备",
+      "作品集",
+      "Demo",
+      "学习计划"
+    ],
+    "excerpt": "项目一第十四步（收官）：整理项目文档、准备演示，作为作品集第一块基石。覆盖一页项目简介、Demo 脚本（3-5 个代表性问题 + 预备答案/引用）、截图/录屏要点、README 终版（架构图+功能+运行步骤+GIF）、作品集页草稿，以及线下 Demo 翻车预案。",
+    "readingTime": 13,
+    "content": "# Day 70：项目一 - 项目展示准备\n\n## 一、目标\n\nDay 57→69 完成了知识库问答系统的「从 0 到 1」，今天是 **展示收官**：把它打包成能对外讲的成果，作为作品集第一块基石。项目一 14 步全部走完。\n\n> 写得出来、跑得起来、讲得清楚，三者齐备才叫「完成一个项目」。\n\n## 二、一页项目简介（elevator pitch）\n\n准备一段 30 秒能讲完的介绍，建议结构：\n- **是什么**：基于 RAG 的智能知识库问答系统，能基于私有文档精准回答并给出引用溯源。\n- **技术栈**：Next.js（App Router）+ Vercel AI SDK（streamText / useChat）+ LangChain.js（切分）+ OpenAI Embeddings + Pinecone。\n- **亮点**：流式打字机、引用溯源 SourceCard、多轮上下文压缩、线上可访问。\n- **Demo 一句带过**：「问它知识库里的问题，它能边流式回答边标出来源。」\n\n## 三、Demo 脚本（提前演练）\n\n选 3-5 个有代表性的问题，并准备好预期答案与对应引用，避免现场卡壳：\n1. 「这个知识库主要讲什么？」（验证基础检索）\n2. 「XX 概念怎么理解？」（验证 chunk 切分与召回质量）\n3. 「XX 和 YY 有什么区别？」（验证多片段融合）\n4. 追问：「那它和 Day 40 讲的混合检索有什么关系？」（验证多轮上下文，呼应 Day 64）\n5. 「知识库里没有的内容呢？」（验证诚实拒答 / 无资料提示）\n\n> 现场 Demo 前务必先 `npm run ingest` 跑通索引（呼应 Day 66/69 的空索引 0 命中坑），并确认线上环境变量齐全（Day 66）。\n\n## 四、截图 / 录屏要点\n\n至少 capture 4 张：① 欢迎屏 + 示例问题 ② 流式打字机进行中 ③ SourceCard 引用展示 ④ 多轮追问连贯。可录一段 30s 短视频（带字幕/GIF）放进 README。\n\n## 五、README 终版（Day 66/69 基础上补）\n\n- 架构数据流图：用户问题 → embedQuery → Pinecone TopK → 注入 System Prompt → streamText → UI Message Stream → 前端打字机 + SourceCard。\n- 功能清单 + 运行步骤（install / env / 建索引 / ingest / dev）。\n- 一张 Demo GIF + 「踩坑记录」章节（Day 69 沉淀的清单，作品集加分）。\n\n## 六、作品集页草稿\n\n为 Day 84 总作品集预留：项目名、一句话、技术栈标签、Demo 链接（Vercel）、源码链接、关键截图、你 responsible 的部分。今天先把骨架填上，后续项目二、三同模板累加。\n\n## 七、线下 Demo 翻车预案\n\n- 索引为空 / 维度错 → 提前 ingest 并验证一次。\n- 限流或网络抖动 → 准备一段录屏备份，现场放录屏兜底。\n- 长回答被截断 → 确认 `maxDuration`（Day 61/66）已设。\n- 准备一句收尾：「这是项目一，后面还有多 Agent 协作助手和 MCP 工具服务器两个项目。」\n\n## 八、今日实践任务\n\n1. 写好一页项目简介 + Demo 脚本（含预期答案/引用）。\n2. 跑通 ingest，截 4 张图 / 录 30s 视频，放进 README。\n3. 完成 README 终版（架构图 + 功能 + 步骤 + GIF + 踩坑记录）。\n4. 建作品集页草稿，填入项目一骨架。\n\n> **明日（Day 71）进入项目二：多 Agent 协作编程助手**（Node.js + Vercel AI SDK + MCP），从单体 RAG 升级到「多个角色 Agent 协作写代码」的编排范式。\n\n## 九、回顾资源\n\n- 本博客 `AI Agent` 标签：Day 1-69 全部笔记（项目一完整 14 步）\n- Vercel AI Chatbot 参考：https://github.com/vercel/ai-chatbot\n- Vercel AI SDK UI 中文文档：https://ai-sdk.com.cn/docs/ai-sdk-ui"
   }
 ]
